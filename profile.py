@@ -45,7 +45,7 @@ for i in range(4):
   elif i == 2:
     node = request.XenVM("storage")
   else:
-    node = request.XenVM("compute-" + i)
+    node = request.XenVM("compute-" + str(i))
     node.cores = 4
     node.ram = 4096
 
