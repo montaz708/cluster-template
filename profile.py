@@ -60,12 +60,14 @@ for i in range(4):
   node.addService(pg.Execute(shell="sh", command="sudo /local/repository/passwordless.sh"))
   node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/install_mpi.sh"))
   node.addService(pg.Execute(shell="sh", command="sudo /local/repository/install_mpi.sh"))
+  node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/SetItUp.sh"))
+  node.addService(pg.Execute(shell="sh", command="sudo /local/repository/SetItUp.sh"))
 
   # This code segment is added per Benjamin Walker's solution to address the StrictHostKeyCheck issue of ssh
   # node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/ssh_setup.sh"))
   # node.addService(pg.Execute(shell="sh", command="sudo -H -u lngo bash -c '/local/repository/ssh_setup.sh'"))
 
-  node.addService(pg.Execute(shell="sh", command="sudo su lngo -c 'cp /local/repository/source/* /users/montaz708'"))
+  node.addService(pg.Execute(shell="sh", command="sudo su montaz708 -c 'cp /local/repository/source/* /users/montaz708'"))
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
