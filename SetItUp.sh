@@ -10,17 +10,10 @@ yum install -y munge-devel munge-libs readline-devel perl-ExtUtils-MakeMaker ope
 
 wget https://download.schedmd.com/slurm/slurm-18.08.3.tar.bz2
 
-tar -xjf slurm-18.08.3.tar.bz2
+tar -xjf slurm-18.08.3.tar.bz2 -C /etc/
+
+mv /etc/slurm-18.08.3 ./slurm
 
 rpm -Uvh ./rpmbuild/RPMS/x86_64/*.rpm
-
-useradd slurm
-mkdir /var/log/slurm
-
-chown slurm /varlog/slurm
-
-yum install mariadb-server -y
-systemctl start mariadb
-systemctl enable mariadb
 
 echo "Installations are done!"

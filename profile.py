@@ -10,6 +10,7 @@ pc = portal.Context()
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
+repo = "/local/repository/"
 
 tourDescription = \
 """
@@ -40,14 +41,35 @@ for i in range(6):
   if i == 0:
     node = request.XenVM("head")
     node.routable_control_ip = "true"
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 755 "+repo+"nfs_setup_head.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo "+repo+"nfs_setup_head.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 755 "+repo+"install_mpi.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo "+repo+"install_mpi.shnode.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/SetItUp.sh"))
+    node.addService(pg.Execute(shell="sh", command="/local/repository/SetItUp.sh &> /local/logs/startup.log"))
   elif i == 1:
     node = request.XenVM("metadata")
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/SetItUp.sh"))
+    node.addService(pg.Execute(shell="sh", command="/local/repository/SetItUp.sh &> /local/logs/startup.log"))
+    node.addService(pg.Execute(shell="sh", command="sudo su"))
+    node.addService(pg.Execute(shell="sh", command="mysql < "+repo+"mariadbQuery.sql"))
+    node.addService(pg.Execute(shell="sh", command="chmod 755 "+repo+"munge_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command=repo+"munge_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command="dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key"))
+    node.addService(pg.Execute(shell="sh", command="cp /etc/munge/munge.key /scratch/"))
   elif i == 2:
     node = request.XenVM("storage")
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 755"+repo+"nfs_setup_storage.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo "+repo+"nfs_setup_storage.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo chomd 755"+repo+"nfs_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo "+repo+"nfs_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo su montaz708 -c 'cp /local/repository/source/* /users/montaz708'"))
+
   else:
     node = request.XenVM("compute-" + str(i - 2))
     node.cores = 4
     node.ram = 4096
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 755"+repo+"nfs_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo "+repo+"nfs_setup.sh"))
 
   node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops:CENTOS7-64-STD"
 
@@ -61,13 +83,14 @@ for i in range(6):
   node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/install_mpi.sh"))
   node.addService(pg.Execute(shell="sh", command="sudo /local/repository/install_mpi.sh"))
   node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/SetItUp.sh"))
-  node.addService(pg.Execute(shell="sh", command="sudo /local/repository/SetItUp.sh"))
+  node.addService(pg.Execute(shell="sh", command="/local/repository/SetItUp.sh &> /local/logs/startup.log"))
+  node.addService(pg.Execute(shell="sh", command="sudo chmod 755 "+repo+"slurm_configurations.sh"))
+  node.addService(pg.Execute(shell="sh", command="sudo "+repo+"slurm_configurations.sh"))
+  node.addService(pg.Execute(shell="sh", command="sudo "))
 
   # This code segment is added per Benjamin Walker's solution to address the StrictHostKeyCheck issue of ssh
   # node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/ssh_setup.sh"))
   # node.addService(pg.Execute(shell="sh", command="sudo -H -u lngo bash -c '/local/repository/ssh_setup.sh'"))
-
-  node.addService(pg.Execute(shell="sh", command="sudo su montaz708 -c 'cp /local/repository/source/* /users/montaz708'"))
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
