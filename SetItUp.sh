@@ -17,7 +17,7 @@ rpm -Uvh ./rpmbuild/RPMS/x86_64/*.rpm
 useradd slurm
 mkdir /var/log/slurm
 
-chown slurm /varlog/slurm
+chown slurm /var/log/slurm
 
 yum install mariadb-server -y
 systemctl start mariadb
